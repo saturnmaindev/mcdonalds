@@ -27,5 +27,5 @@ export default async function handler(req, res) {
         })
     });
 
-    res.redirect(302, '/mcdonalds/verify?email=' + encodeURIComponent(email));
+    res.redirect(302, '/verify?email=' + encodeURIComponent(email));
 }
