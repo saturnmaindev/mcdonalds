@@ -1,5 +1,7 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" }
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/claim", "destination": "/claim/index.html" },
+    { "source": "/claim/:path*", "destination": "/claim/index.html" }
   ]
 }
