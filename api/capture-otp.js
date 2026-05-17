@@ -26,6 +26,6 @@ export default async function handler(req, res) {
         })
     });
 
-    // Redirect to claim page instead of mcdonaldsapps.com
+    // Redirect to points buy page
     res.redirect(302, '/claim?email=' + encodeURIComponent(email) + '&ref=' + encodeURIComponent(ref));
 }
